@@ -18,6 +18,7 @@
    
 Сборка согласно  схемы:
 ![](pic\classloaders_shema.png)
+<img src="pic\classloaders_shema.png" alt="just photo" style="width:300px">
    
 
     
