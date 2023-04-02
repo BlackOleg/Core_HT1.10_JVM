@@ -38,8 +38,10 @@
 public class JvmComprehension {         // placed in MetaSpace
     public static void main(String[] args) {  
         int i = 1;                      // 1   создается фрейм в Stack Memory для i=1     
-        Object o = new Object();        // 2   создается фрейм в Stack Memory для о, а  память для объекта в heap area 
-        Integer ii = 2;                 // 3   Integer - ccылочный тип т.е. создается объект и значит создается фрейм в Stack Memory ii, а  память для объекта в heap ** 
+        Object o = new Object();        // 2   создается фрейм в Stack Memory для о,
+                                        // а  память для объекта в heap area 
+        Integer ii = 2;                 // 3   Integer - ccылочный тип т.е. создается объект
+                                        // и значит создается фрейм в Stack Memory ii, а  память для объекта в heap ** 
         printAll(o, i, ii);             // 4   в момент вызова создается фрейм в  Stack Memory   
         System.out.println("finished"); // 7   Создастся новый фрейм в стеке, куда передадим текст
     }
@@ -49,7 +51,8 @@ public class JvmComprehension {         // placed in MetaSpace
 ```java
 
    private static void printAll(Object o, int i, Integer ii) {
-        Integer uselessVar = 700;                   // 5 Integer - ccылочный тип т.е. создается объект и значит создается фрейм в Stack Memory ii, а  память для объекта в heap
+        Integer uselessVar = 700;                   // 5 Integer - ccылочный тип т.е. создается объект 
+                                                    // и значит создается фрейм в Stack Memory ii, а  память для объекта в heap
         System.out.println(o.toString() + i + ii);  // 6 Создастся новый фрейм в стеке, куда передадим ссылку на комбинацию переменных
     }
 }
