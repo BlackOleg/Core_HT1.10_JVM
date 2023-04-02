@@ -3,42 +3,44 @@
 ## Поэтапно:
 ### ClassLoader'ы
 Согласно спецификации Java SE для того, чтобы получить работающий в JVM код, необходимо выполнить три этапа:
-1. загрузка байт-кода из ресурсов и создание экземпляра класса Class
+1. Загрузка байт-кода из ресурсов и создание экземпляра класса Class
 
 сюда входит поиск запрошенного класса среди загруженных ранее, получение байт-кода для загрузки и проверка его корректности, создание экземпляра класса Class (для работы с ним в runtime), загрузка родительских классов. Если родительские классы и интерфейсы не были загружены, то и рассматриваемый класс считается не загруженным.
 
-2. связывание (или линковка)
+2. Связывание (или линковка)
 
 по спецификации этот этап разбивается еще на три стадии:
 
 - Verification, происходит проверка корректности полученного байт-кода.
 - Preparation, выделение оперативной памяти под статические поля и инициализация их значениями по умолчанию (при этом явная инициализация, если она есть, происходит уже на этапе инициализации).
 - Resolution, разрешение символьных ссылок типов, полей и методов.
-3. инициализация полученного объекта
+3. Инициализация полученного объекта
    
-Сборка согласно  схемы:
-![](pic\classloaders_shema.png)
-<img src="pic\classloaders_shema.png" alt="just photo" style="width:300px">
-   
+**Сборка согласно  схемы:**
 
+<img src="pic\classloaders_shema.png" alt="classloaders shema" style="width:600px">
+   
+Все найденные классы загружаются в  Metaspace
+- данные о классе (имя, методы, поля и др);
+- константы.  (У нас в примере констант - нет)
     
     области памяти (стэк (и его фреймы), хип, метаспейс)
     сборщик мусора
 
 
 ### Код для исследования
-public class JvmComprehension {
+public class JvmComprehension {         // <span style="color:red"> ** placed in MetaSpace ** </span>
 
     public static void main(String[] args) {
-        int i = 1;                      // 1 
-        Object o = new Object();        // 2
-        Integer ii = 2;                 // 3
-        printAll(o, i, ii);             // 4
-        System.out.println("finished"); // 7
+        int i = 1;                      // 1  <span style="color:red"> ** создается фрейм в Stack Memory для i=1 ** </span>
+        Object o = new Object();        // 2  <span style="color:red"> ** создается фрейм в Stack Memory для о, а  память для объекта в heap area ** </span>
+        Integer ii = 2;                 // 3  <span style="color:red"> ** Integer - ccылочный тип т.е. создается объект и значит создается фрейм в Stack Memory ii, а  память для объекта в heap ** </span>
+        printAll(o, i, ii);             // 4  <span style="color:red"> ** в момент вызова создается фрейм в  Stack Memory   ** </span>
+        System.out.println("finished"); // 7  <span style="color:red"> ** Создастся новый фрейм в стеке, куда передадим текст** </span>
     }
 
    private static void printAll(Object o, int i, Integer ii) {
-        Integer uselessVar = 700;                   // 5
-        System.out.println(o.toString() + i + ii);  // 6
+        Integer uselessVar = 700;                   // 5 <span style="color:red"> ** Integer - ccылочный тип т.е. создается объект и значит создается фрейм в Stack Memory ii, а  память для объекта в heap ** </span>
+        System.out.println(o.toString() + i + ii);  // 6 <span style="color:red"> ** Создастся новый фрейм в стеке, куда передадим ссылку на комбинацию переменных** </span>
     }
 }
